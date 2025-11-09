@@ -9,23 +9,34 @@ import About from './components/About';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Footer from './components/Footer';
+import BlockchainBackground from './components/BlockchainBackground';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{
-        background: 'linear-gradient(180deg, #0a1929 0%, #112240 100%)',
-        color: 'text.primary',
-      }}>
-        <Navbar />
-        <Hero />
-        <Box component="main">
-          <About />
-          <Skills />
-          <Projects />
+      <Box
+        sx={{
+          position: 'relative',
+          minHeight: '100vh',
+          overflow: 'hidden',
+          color: 'text.primary',
+        }}
+      >
+        {/* Blockchain Background Layer */}
+        <BlockchainBackground />
+
+        {/* Foreground Content */}
+        <Box sx={{ position: 'relative', zIndex: 1 }}>
+          <Navbar />
+          <Hero />
+          <Box component="main">
+            <About />
+            <Skills />
+            <Projects />
+          </Box>
+          <Footer />
         </Box>
-        <Footer />
       </Box>
     </ThemeProvider>
   );

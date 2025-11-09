@@ -1,71 +1,82 @@
 import React from 'react';
-import { 
-  Box, 
-  Typography, 
-  Container, 
-  Grid, 
-  Card, 
-  CardContent, 
-  Chip, 
+import {
+  Box,
+  Typography,
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  Chip,
   Button,
-  useTheme 
+  useTheme,
+  alpha,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 const projects = [
   {
     title: 'Phoenix XShare',
-    description: "Phoenix XShare is a secure, open-source, and self-hostable file-sharing application built for privacy, performance, and ease of use.",
+    description:
+      'Secure, self-hostable file sharing app focused on privacy, simplicity, and performance.',
     image: '/xshare.jpg',
     tags: ['Express.js', 'Node.js', 'MongoDB', 'EJS'],
-    link: 'https://github.com/codedbysoumyajit/Phoenix-XShare'
+    link: 'https://github.com/codedbysoumyajit/Phoenix-XShare',
   },
   {
-    title: 'KernelView',
-    description: "KernelView is a modern and powerful system information tool built in Python. It provides detailed insights into your system's hardware and software, including CPU, GPU, RAM, OS, and more.",
-    image: '/kv.jpg',
-    tags: ['Python', 'PSutil', 'OS'],
-    link: 'https://github.com/codedbysoumyajit/KernelView'
+    title: 'KernelView Go',
+    description:
+      'A modern CLI tool that shows system information fast and precisely, built with Go.',
+    image: '/kv-go.jpg',
+    tags: ['Go', 'gopsutil', 'goroutines'],
+    link: 'https://github.com/codedbysoumyajit/KernelView-Go',
   },
   {
-    title: 'Personal Blogspot',
-    description: 'A modern, responsive, and personalized blog platform built with the MERN stack. (incomplete)',
-    image: '/blogspot.jpg',
-    tags: ['Express.js', 'EJS', 'MongoDB'],
-    link: 'https://github.com/codedbysoumyajit/personal-blogspot'
+    title: 'PyroQuanta',
+    description:
+      'AI-powered open-source Discord bot built with Google Gemini for code, translation, and creative tasks.',
+    image: '/pyro.jpg',
+    tags: ['discord.js', '@google/generative-ai'],
+    link: 'https://github.com/codedbysoumyajit/PyroQuanta',
   },
 ];
 
 const ProjectCard = ({ project }) => {
   const theme = useTheme();
+  const primary = theme.palette.primary.main;
+  const primaryLight = theme.palette.primary.light ?? '#00d4ff';
+  const glow = alpha(primary, 0.18);
 
   return (
     <Card
       component={motion.div}
       whileHover={{ y: -8 }}
       sx={{
-        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        borderRadius: '12px',
         overflow: 'hidden',
-        background: 'rgba(12, 18, 30, 0.8)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid',
-        borderColor: 'rgba(255, 255, 255, 0.05)',
-        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-        transition: 'all 0.25s cubic-bezier(0.645,0.045,0.355,1)',
+        borderRadius: 2,
+        // Use the theme paper color so the card surface is readable over the canvas
+        background: theme.palette.background.paper,
+        // optionally, for a slightly glassy look, you can use an alpha variant:
+        // background: alpha(theme.palette.background.paper, 0.98),
+        border: `1px solid ${alpha('#fff', 0.04)}`,
+        transition:
+          'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
+        boxShadow: '0 6px 20px rgba(0,0,0,0.45)',
         '&:hover': {
-          borderColor: 'rgba(0, 172, 193, 0.3)',
-          boxShadow: `0 12px 24px ${theme.palette.primary.main}20`,
+          transform: 'translateY(-6px)',
+          borderColor: alpha(primary, 0.25),
+          boxShadow: `0 12px 34px ${glow}`,
         },
       }}
     >
+      {/* Image */}
       <Box
         sx={{
           position: 'relative',
-          height: '180px',
+          height: 200,
           overflow: 'hidden',
         }}
       >
@@ -78,75 +89,84 @@ const ProjectCard = ({ project }) => {
             height: '100%',
             objectFit: 'cover',
             transition: 'transform 0.5s ease',
-            '&:hover': {
-              transform: 'scale(1.05)',
-            },
+            '&:hover': { transform: 'scale(1.05)' },
           }}
         />
         <Box
           sx={{
             position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '40%',
-            background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)',
+            inset: 0,
+            background:
+              'linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.55) 100%)',
           }}
         />
       </Box>
 
+      {/* Content */}
       <CardContent sx={{ flexGrow: 1, p: 3 }}>
         <Typography
-          gutterBottom
           variant="h5"
-          component="h3"
-          sx={{ fontWeight: 600, mb: 1.5 }}
+          sx={{
+            fontWeight: 700,
+            mb: 1.2,
+            color: theme.palette.text.primary,
+          }}
         >
           {project.title}
         </Typography>
+
         <Typography
           variant="body2"
-          color="text.secondary"
-          sx={{ mb: 2, fontSize: '0.95rem' }}
+          sx={{
+            color: theme.palette.text.secondary,
+            mb: 2.5,
+            fontSize: '0.95rem',
+            lineHeight: 1.6,
+          }}
         >
           {project.description}
         </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-          {project.tags.map((tag, index) => (
+
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.2 }}>
+          {project.tags.map((tag, i) => (
             <Chip
-              key={index}
+              key={i}
               label={tag}
               size="small"
               sx={{
-                backgroundColor: 'rgba(0, 172, 193, 0.15)',
-                color: 'primary.main',
-                fontWeight: 500,
-                fontSize: '0.7rem',
-                height: '24px',
+                background: alpha(primary, 0.08),
+                color: primary,
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                height: 26,
+                borderRadius: 1.5,
+                border: `1px solid ${alpha(primary, 0.1)}`,
               }}
             />
           ))}
         </Box>
       </CardContent>
 
+      {/* Footer */}
       <Box sx={{ px: 3, pb: 3 }}>
         <Button
           component="a"
           href={project.link}
           target="_blank"
           rel="noopener noreferrer"
+          endIcon={<OpenInNewIcon />}
           variant="contained"
-          color="primary"
+          fullWidth
           sx={{
-            px: 2.5,
-            py: 1,
-            borderRadius: '8px',
-            fontWeight: 600,
+            fontWeight: 700,
             textTransform: 'none',
-            background: 'linear-gradient(90deg, #00acc1, #00d4ff)',
+            borderRadius: 1.5,
+            py: 1,
+            background: `linear-gradient(90deg, ${primary}, ${primaryLight})`,
+            boxShadow: `0 8px 20px ${alpha(primary, 0.25)}`,
             '&:hover': {
-              transform: 'translateY(-2px)',
-              boxShadow: '0 4px 12px rgba(0, 172, 193, 0.4)',
+              transform: 'translateY(-3px)',
+              boxShadow: `0 12px 36px ${alpha(primary, 0.35)}`,
             },
           }}
         >
@@ -158,31 +178,21 @@ const ProjectCard = ({ project }) => {
 };
 
 const Projects = () => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+  const theme = useTheme();
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
 
   const container = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, y: 18 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
+      y: 0,
+      transition: { staggerChildren: 0.1 },
     },
   };
 
   const item = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.645, 0.045, 0.355, 1],
-      },
-    },
+    hidden: { opacity: 0, y: 25 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
 
   return (
@@ -190,74 +200,57 @@ const Projects = () => {
       id="projects"
       ref={ref}
       sx={{
-        py: { xs: 8, md: 10 },
-        position: 'relative',
-        background: 'linear-gradient(to bottom, #0a0f17 0%, #0d1117 100%)',
-        '&:before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(0,172,193,0.4), transparent)',
-        },
+        py: { xs: 8, md: 12 },
+        // make the section transparent so canvas shows through
+        background: 'transparent',
+        color: theme.palette.text.primary,
       }}
     >
       <Container maxWidth="lg">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <Typography
-            variant="h2"
-            sx={{
-              textAlign: 'center',
-              mb: 6,
-              position: 'relative',
-              '&:after': {
-                content: '""',
-                position: 'absolute',
-                bottom: -12,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '80px',
-                height: '4px',
-                background: 'linear-gradient(90deg, #00acc1, #00d4ff)',
-                borderRadius: '2px',
-              },
-            }}
-          >
-            Featured Projects
-          </Typography>
-        </motion.div>
-
-        <motion.div
-          variants={container}
           initial="hidden"
-          animate={inView ? "visible" : "hidden"}
+          animate={inView ? 'visible' : 'hidden'}
+          variants={container}
         >
-          <Grid container spacing={3} justifyContent="center">
-            {projects.map((project, index) => (
-              <Grid 
-                item 
-                xs={12} 
-                sm={6} 
-                md={4} 
-                key={index}
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}
+          {/* Header */}
+          <motion.div variants={item}>
+            <Typography
+              variant="h2"
+              sx={{
+                textAlign: 'center',
+                mb: { xs: 4, md: 6 },
+                fontWeight: 800,
+                fontSize: { xs: '1.8rem', md: '2.4rem' }, // same as About & Skills
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -12,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 80,
+                  height: 4,
+                  background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                  borderRadius: 2,
+                },
+              }}
+            >
+              Featured Projects
+            </Typography>
+          </motion.div>
+
+          {/* Projects Grid */}
+          <Grid container spacing={{ xs: 2, md: 3 }} justifyContent="center">
+            {projects.map((project, i) => (
+              <Grid
+                key={i}
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                sx={{ display: 'flex', justifyContent: 'center' }}
               >
-                <motion.div 
-                  variants={item}
-                  style={{
-                    width: '100%',
-                    maxWidth: '400px'
-                  }}
-                >
+                <motion.div variants={item} style={{ width: '100%', maxWidth: 420 }}>
                   <ProjectCard project={project} />
                 </motion.div>
               </Grid>
