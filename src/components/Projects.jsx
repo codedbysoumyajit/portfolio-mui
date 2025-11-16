@@ -10,10 +10,14 @@ import {
   Button,
   useTheme,
   alpha,
+  useMediaQuery,
 } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import StarIcon from '@mui/icons-material/Star';
+import CallSplitIcon from '@mui/icons-material/CallSplit';
+import useGitHubRepo from '../hooks/useGitHubRepo';
 
 const projects = [
   {
@@ -23,6 +27,7 @@ const projects = [
     image: '/xshare.jpg',
     tags: ['Express.js', 'Node.js', 'MongoDB', 'EJS'],
     link: 'https://github.com/codedbysoumyajit/Phoenix-XShare',
+    repo: 'codedbysoumyajit/Phoenix-XShare',
   },
   {
     title: 'KernelView Go',
@@ -31,6 +36,7 @@ const projects = [
     image: '/kv-go.jpg',
     tags: ['Go', 'gopsutil', 'goroutines'],
     link: 'https://github.com/codedbysoumyajit/KernelView-Go',
+    repo: 'codedbysoumyajit/KernelView-Go',
   },
   {
     title: 'PyroQuanta',
@@ -39,141 +45,285 @@ const projects = [
     image: '/pyro.jpg',
     tags: ['discord.js', '@google/generative-ai'],
     link: 'https://github.com/codedbysoumyajit/PyroQuanta',
+    repo: 'codedbysoumyajit/PyroQuanta',
   },
 ];
 
 const ProjectCard = ({ project }) => {
   const theme = useTheme();
   const primary = theme.palette.primary.main;
-  const primaryLight = theme.palette.primary.light ?? '#00d4ff';
-  const glow = alpha(primary, 0.18);
+  const primaryLight = theme.palette.primary.light ?? '#4fb3bf';
+
+  const { stars, forks, updated } = useGitHubRepo(project.repo);
+
+  const lastUpdated = updated
+    ? new Date(updated).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : null;
+
+  // Tilt only on desktop
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleMouseMove = (e) => {
+    if (isMobile) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const maxTilt = 10;
+    const rotateY = ((x - centerX) / centerX) * maxTilt;
+    const rotateX = -((y - centerY) / centerY) * maxTilt;
+
+    tiltX.set(rotateX);
+    tiltY.set(rotateY);
+  };
+
+  const handleMouseLeave = () => {
+    tiltX.set(0);
+    tiltY.set(0);
+  };
+
+  const tiltHandlers = isMobile
+    ? {}
+    : {
+        onMouseMove: handleMouseMove,
+        onMouseLeave: handleMouseLeave,
+      };
 
   return (
-    <Card
-      component={motion.div}
-      whileHover={{ y: -8 }}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        borderRadius: 2,
-        // Use the theme paper color so the card surface is readable over the canvas
-        background: theme.palette.background.paper,
-        // optionally, for a slightly glassy look, you can use an alpha variant:
-        // background: alpha(theme.palette.background.paper, 0.98),
-        border: `1px solid ${alpha('#fff', 0.04)}`,
-        transition:
-          'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
-        boxShadow: '0 6px 20px rgba(0,0,0,0.45)',
-        '&:hover': {
-          transform: 'translateY(-6px)',
-          borderColor: alpha(primary, 0.25),
-          boxShadow: `0 12px 34px ${glow}`,
-        },
-      }}
+    <motion.div
+      style={!isMobile ? { perspective: 900 } : undefined}
+      {...tiltHandlers}
     >
-      {/* Image */}
-      <Box
+      <Card
+        component={motion.div}
+        style={
+          !isMobile
+            ? {
+                rotateX: tiltX,
+                rotateY: tiltY,
+                transformStyle: 'preserve-3d',
+              }
+            : undefined
+        }
+        whileHover={{ scale: isMobile ? 1.01 : 1.02 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 18 }}
         sx={{
-          position: 'relative',
-          height: 200,
+          display: 'flex',
+          flexDirection: 'column',
           overflow: 'hidden',
+          borderRadius: 2,
+          // Match overall glass look of site (About cards / Footer)
+          background: 'rgba(10, 15, 25, 0.9)',
+          border: '1px solid rgba(255,255,255,0.05)',
+          boxShadow: '0 12px 32px rgba(0,0,0,0.7)',
+          backdropFilter: 'blur(14px)',
+          transition:
+            'box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease, transform 0.3s ease',
+          '&:hover': {
+            borderColor: alpha(primary, 0.6),
+            boxShadow: `0 20px 50px rgba(0,172,193,0.35)`,
+            background: 'rgba(10, 18, 30, 0.98)',
+          },
         }}
       >
-        <Box
-          component="img"
-          src={project.image}
-          alt={project.title}
-          sx={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            transition: 'transform 0.5s ease',
-            '&:hover': { transform: 'scale(1.05)' },
-          }}
-        />
+        {/* Image */}
         <Box
           sx={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.55) 100%)',
-          }}
-        />
-      </Box>
-
-      {/* Content */}
-      <CardContent sx={{ flexGrow: 1, p: 3 }}>
-        <Typography
-          variant="h5"
-          sx={{
-            fontWeight: 700,
-            mb: 1.2,
-            color: theme.palette.text.primary,
+            position: 'relative',
+            height: 200,
+            overflow: 'hidden',
+            transform: !isMobile ? 'translateZ(18px)' : 'none',
           }}
         >
-          {project.title}
-        </Typography>
-
-        <Typography
-          variant="body2"
-          sx={{
-            color: theme.palette.text.secondary,
-            mb: 2.5,
-            fontSize: '0.95rem',
-            lineHeight: 1.6,
-          }}
-        >
-          {project.description}
-        </Typography>
-
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.2 }}>
-          {project.tags.map((tag, i) => (
-            <Chip
-              key={i}
-              label={tag}
-              size="small"
-              sx={{
-                background: alpha(primary, 0.08),
-                color: primary,
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                height: 26,
-                borderRadius: 1.5,
-                border: `1px solid ${alpha(primary, 0.1)}`,
-              }}
-            />
-          ))}
+          <Box
+            component="img"
+            src={project.image}
+            alt={project.title}
+            sx={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.5s ease',
+              '&:hover': {
+                transform: !isMobile ? 'scale(1.05)' : 'scale(1.02)',
+              },
+            }}
+          />
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              // Slightly softer overlay to match rest of site
+              background:
+                'linear-gradient(to bottom, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0.65) 100%)',
+            }}
+          />
         </Box>
-      </CardContent>
 
-      {/* Footer */}
-      <Box sx={{ px: 3, pb: 3 }}>
-        <Button
-          component="a"
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          endIcon={<OpenInNewIcon />}
-          variant="contained"
-          fullWidth
+        {/* Content */}
+        <CardContent
           sx={{
-            fontWeight: 700,
-            textTransform: 'none',
-            borderRadius: 1.5,
-            py: 1,
-            background: `linear-gradient(90deg, ${primary}, ${primaryLight})`,
-            boxShadow: `0 8px 20px ${alpha(primary, 0.25)}`,
-            '&:hover': {
-              transform: 'translateY(-3px)',
-              boxShadow: `0 12px 36px ${alpha(primary, 0.35)}`,
-            },
+            flexGrow: 1,
+            p: 3,
+            transform: !isMobile ? 'translateZ(10px)' : 'none',
           }}
         >
-          View Project
-        </Button>
-      </Box>
-    </Card>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              mb: 0.8,
+              color: theme.palette.text.primary,
+            }}
+          >
+            {project.title}
+          </Typography>
+
+          {/* GitHub Repo Stats */}
+          {(stars !== null || forks !== null) && (
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 1.2,
+                alignItems: 'center',
+                mb: 2,
+              }}
+            >
+              {stars !== null && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.6,
+                    px: 1.1,
+                    py: 0.35,
+                    borderRadius: 999,
+                    background: alpha(primary, 0.09),
+                    border: `1px solid ${alpha(primary, 0.4)}`,
+                    boxShadow: `0 0 10px ${alpha(primary, 0.35)}`,
+                  }}
+                >
+                  <StarIcon sx={{ fontSize: 18, color: primary }} />
+                  <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                    {stars}
+                  </Typography>
+                </Box>
+              )}
+
+              {forks !== null && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.6,
+                    px: 1.1,
+                    py: 0.35,
+                    borderRadius: 999,
+                    background: alpha(primary, 0.06),
+                    border: `1px solid ${alpha(primary, 0.3)}`,
+                  }}
+                >
+                  <CallSplitIcon sx={{ fontSize: 18, color: primary }} />
+                  <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                    {forks}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          )}
+
+          {/* Last updated */}
+          {lastUpdated && (
+            <Typography
+              variant="caption"
+              sx={{
+                display: 'block',
+                mb: 2,
+                color: theme.palette.text.secondary,
+                opacity: 0.8,
+              }}
+            >
+              Updated: {lastUpdated}
+            </Typography>
+          )}
+
+          <Typography
+            variant="body2"
+            sx={{
+              color: theme.palette.text.secondary,
+              mb: 2.4,
+              fontSize: '0.95rem',
+              lineHeight: 1.6,
+            }}
+          >
+            {project.description}
+          </Typography>
+
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.2 }}>
+            {project.tags.map((tag, i) => (
+              <Chip
+                key={i}
+                label={tag}
+                size="small"
+                sx={{
+                  background: alpha(primary, 0.1),
+                  color: primary,
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  height: 26,
+                  borderRadius: 999,
+                  border: `1px solid ${alpha(primary, 0.3)}`,
+                }}
+              />
+            ))}
+          </Box>
+        </CardContent>
+
+        {/* Footer */}
+        <Box
+          sx={{
+            px: 3,
+            pb: 3,
+            pt: 0,
+            transform: !isMobile ? 'translateZ(6px)' : 'none',
+          }}
+        >
+          <Button
+            component="a"
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            endIcon={<OpenInNewIcon />}
+            variant="contained"
+            fullWidth
+            sx={{
+              fontWeight: 700,
+              textTransform: 'none',
+              borderRadius: 1.7,
+              py: 1,
+              // Match Hero's main CTA gradient style
+              background: `linear-gradient(90deg, ${primary}, ${primaryLight})`,
+              boxShadow: '0 8px 24px rgba(0,172,193,0.32)',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 16px 40px rgba(0,172,193,0.45)',
+              },
+            }}
+          >
+            View Project
+          </Button>
+        </Box>
+      </Card>
+    </motion.div>
   );
 };
 
@@ -201,7 +351,6 @@ const Projects = () => {
       ref={ref}
       sx={{
         py: { xs: 8, md: 12 },
-        // make the section transparent so canvas shows through
         background: 'transparent',
         color: theme.palette.text.primary,
       }}
@@ -220,7 +369,7 @@ const Projects = () => {
                 textAlign: 'center',
                 mb: { xs: 4, md: 6 },
                 fontWeight: 800,
-                fontSize: { xs: '1.8rem', md: '2.4rem' }, // same as About & Skills
+                fontSize: { xs: '1.8rem', md: '2.4rem' },
                 position: 'relative',
                 '&::after': {
                   content: '""',
@@ -239,7 +388,7 @@ const Projects = () => {
             </Typography>
           </motion.div>
 
-          {/* Projects Grid */}
+          {/* Grid */}
           <Grid container spacing={{ xs: 2, md: 3 }} justifyContent="center">
             {projects.map((project, i) => (
               <Grid
@@ -250,7 +399,10 @@ const Projects = () => {
                 md={4}
                 sx={{ display: 'flex', justifyContent: 'center' }}
               >
-                <motion.div variants={item} style={{ width: '100%', maxWidth: 420 }}>
+                <motion.div
+                  variants={item}
+                  style={{ width: '100%', maxWidth: 420 }}
+                >
                   <ProjectCard project={project} />
                 </motion.div>
               </Grid>

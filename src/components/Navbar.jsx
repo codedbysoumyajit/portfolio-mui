@@ -12,6 +12,7 @@ import {
   Divider,
   useTheme,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -19,6 +20,7 @@ import { Link as ScrollLink } from 'react-scroll';
 
 function HideOnScroll({ children }) {
   const trigger = useScrollTrigger();
+
   return (
     <Slide appear={false} direction="down" in={!trigger}>
       {children}
@@ -30,8 +32,9 @@ const Navbar = () => {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleDrawerToggle = () => setMobileOpen((v) => !v);
-  const closeMobileMenu = () => setMobileOpen(false);
+  const handleDrawerToggle = () => {
+    setMobileOpen((prev) => !prev);
+  };
 
   const navItems = [
     { name: 'Home', to: 'hero' },
@@ -42,56 +45,85 @@ const Navbar = () => {
 
   const blogUrl = 'https://blogspot.soumyajitdas.site';
 
-  const primaryStart = theme.palette.primary.main ?? '#00acc1';
-  const primaryEnd = '#00d4ff';
-
   return (
     <HideOnScroll>
       <AppBar
         sx={{
-          backgroundColor: 'rgba(10, 25, 41, 0.82)',
-          backdropFilter: 'blur(8px)',
+          background: 'transparent',
           boxShadow: 'none',
-          transition: 'all 0.28s ease',
-          py: 1,
-          borderBottom: '1px solid',
-          borderColor: 'rgba(0,172,193,0.08)',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
         }}
       >
-        <Container maxWidth="lg">
-          <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
-            {/* Logo / Brand */}
-            <ScrollLink to="hero" spy smooth duration={500} onClick={closeMobileMenu}>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  background: `linear-gradient(90deg, ${primaryStart}, ${primaryEnd})`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
+        {/* Glassy background layer */}
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            background: `linear-gradient(to bottom, rgba(5,10,20,0.92), rgba(5,10,20,0.82))`,
+            backdropFilter: 'blur(14px)',
+            borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.35)}`,
+            pointerEvents: 'none',
+          }}
+        />
+
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+          <Toolbar
+            disableGutters
+            sx={{
+              minHeight: 64,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            {/* Logo / Name */}
+            <ScrollLink
+              to="hero"
+              spy
+              smooth
+              duration={500}
+              offset={-70}
+              style={{ cursor: 'pointer' }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Box
-                  component="span"
                   sx={{
-                    width: 9,
-                    height: 9,
+                    width: 10,
+                    height: 10,
                     borderRadius: '50%',
-                    background: `linear-gradient(90deg, ${primaryStart}, ${primaryEnd})`,
-                    boxShadow: `0 6px 18px rgba(0,172,193,0.12)`,
+                    background: `radial-gradient(circle at 30% 30%, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
+                    boxShadow: `0 0 12px ${alpha(theme.palette.primary.main, 0.8)}`,
                   }}
                 />
-                SOUMYAJIT
-              </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 800,
+                    letterSpacing: '0.16em',
+                    fontSize: { xs: '0.78rem', md: '0.85rem' },
+                    textTransform: 'uppercase',
+                    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  SOUMYAJIT
+                </Typography>
+              </Box>
             </ScrollLink>
 
-            {/* Desktop Links */}
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1.5, alignItems: 'center' }}>
+            {/* Desktop Navigation */}
+            <Box
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                alignItems: 'center',
+                gap: 2.5,
+              }}
+            >
               {navItems.map((item) => (
                 <ScrollLink
                   key={item.to}
@@ -102,17 +134,34 @@ const Navbar = () => {
                   offset={-70}
                 >
                   <Button
+                    disableRipple
                     sx={{
-                      color: 'text.primary',
-                      fontWeight: 600,
-                      fontSize: '0.95rem',
+                      color: 'text.secondary',
+                      fontWeight: 500,
+                      fontSize: '0.9rem',
                       textTransform: 'none',
-                      px: 2,
-                      py: 0.9,
-                      borderRadius: '8px',
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 999,
+                      position: 'relative',
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        left: '50%',
+                        bottom: 4,
+                        transform: 'translateX(-50%)',
+                        width: 0,
+                        height: 2,
+                        borderRadius: 999,
+                        background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                        transition: 'width 0.25s ease',
+                      },
                       '&:hover': {
-                        color: 'primary.main',
-                        backgroundColor: 'rgba(0,172,193,0.06)',
+                        color: 'text.primary',
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
+                      '&:hover::after': {
+                        width: '60%',
                       },
                     }}
                   >
@@ -121,68 +170,65 @@ const Navbar = () => {
                 </ScrollLink>
               ))}
 
-              {/* Blog button (desktop) - subtle outlined/gradient style */}
+              {/* Blogspot Button (desktop) */}
               <Button
+                component="a"
                 href={blogUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                startIcon={<OpenInNewIcon sx={{ fontSize: 18 }} />}
-                onClick={closeMobileMenu}
+                size="small"
+                endIcon={<OpenInNewIcon sx={{ fontSize: 16 }} />}
                 sx={{
-                  ml: 0.5,
+                  ml: 1,
+                  borderRadius: 999,
                   px: 2,
-                  py: 0.8,
-                  borderRadius: '10px',
-                  fontWeight: 700,
+                  py: 0.7,
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
                   textTransform: 'none',
-                  color: 'text.primary',
-                  background: 'transparent',
-                  border: `1px solid rgba(0,172,193,0.12)`,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&:before': {
-                    content: '""',
-                    position: 'absolute',
-                    inset: 0,
-                    zIndex: 0,
-                    background: `linear-gradient(90deg, rgba(0,172,193,0.04), rgba(0,212,255,0.02))`,
-                    opacity: 1,
-                  },
+                  color: theme.palette.primary.light,
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+                  background: alpha(theme.palette.primary.main, 0.09),
+                  boxShadow: `0 0 12px ${alpha(theme.palette.primary.main, 0.45)}`,
                   '&:hover': {
-                    color: 'primary.main',
-                    backgroundColor: 'rgba(0,172,193,0.08)',
-                    borderColor: 'rgba(0,172,193,0.18)',
+                    background: alpha(theme.palette.primary.main, 0.16),
+                    boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.7)}`,
                   },
-                  '& .MuiButton-startIcon, & span': { zIndex: 1 },
                 }}
               >
-                Blog
+                Blogspot
               </Button>
             </Box>
 
-            {/* Mobile menu toggle */}
+            {/* Mobile Menu Button */}
             <IconButton
+              color="inherit"
+              aria-label="open menu"
+              edge="end"
               onClick={handleDrawerToggle}
-              sx={{ display: { md: 'none' }, color: 'text.primary' }}
-              aria-label="menu"
+              sx={{
+                display: { xs: 'flex', md: 'none' },
+                color: 'text.primary',
+              }}
             >
               {mobileOpen ? <CloseIcon /> : <MenuIcon />}
             </IconButton>
           </Toolbar>
 
-          {/* Mobile Drawer-like area */}
+          {/* Mobile Menu */}
           {mobileOpen && (
             <Box
               sx={{
-                display: { md: 'none' },
-                py: 2,
-                transition: 'all 0.18s ease',
-                borderTop: '1px solid',
-                borderColor: 'rgba(255,255,255,0.03)',
+                display: { xs: 'block', md: 'none' },
+                pb: 1,
               }}
             >
-              <Divider sx={{ borderColor: 'rgba(255,255,255,0.04)', mb: 1 }} />
-
+              <Divider
+                sx={{
+                  borderColor: alpha('#ffffff', 0.12),
+                  mb: 1,
+                }}
+              />
               {navItems.map((item) => (
                 <ScrollLink
                   key={item.to}
@@ -191,20 +237,21 @@ const Navbar = () => {
                   smooth
                   duration={500}
                   offset={-70}
-                  onClick={closeMobileMenu}
+                  onClick={handleDrawerToggle}
                 >
                   <Button
                     fullWidth
                     sx={{
                       justifyContent: 'flex-start',
-                      px: 3,
-                      py: 1.4,
-                      color: 'text.primary',
+                      color: 'text.secondary',
                       textTransform: 'none',
-                      fontWeight: 700,
+                      fontSize: '0.95rem',
+                      py: 1.1,
+                      px: 1.5,
+                      borderRadius: 1.2,
                       '&:hover': {
-                        color: 'primary.main',
-                        backgroundColor: 'rgba(0,172,193,0.06)',
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                        color: 'text.primary',
                       },
                     }}
                   >
@@ -213,36 +260,33 @@ const Navbar = () => {
                 </ScrollLink>
               ))}
 
-              <Divider sx={{ borderColor: 'rgba(255,255,255,0.04)', my: 1 }} />
-
-              {/* Blog (mobile) - full width styled button */}
-              <Box sx={{ px: 1 }}>
-                <Button
-                  fullWidth
-                  href={blogUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  startIcon={<OpenInNewIcon sx={{ fontSize: 18 }} />}
-                  onClick={closeMobileMenu}
-                  sx={{
-                    justifyContent: 'flex-start',
-                    px: 3,
-                    py: 1.3,
-                    color: 'text.primary',
-                    textTransform: 'none',
-                    fontWeight: 700,
-                    borderRadius: '8px',
-                    border: `1px solid rgba(0,172,193,0.08)`,
-                    background: 'transparent',
-                    '&:hover': {
-                      color: 'primary.main',
-                      backgroundColor: 'rgba(0,172,193,0.06)',
-                    },
-                  }}
-                >
-                  Blog
-                </Button>
-              </Box>
+              {/* Blogspot inside mobile menu */}
+              <Button
+                fullWidth
+                component="a"
+                href={blogUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                endIcon={<OpenInNewIcon sx={{ fontSize: 18 }} />}
+                sx={{
+                  mt: 0.5,
+                  justifyContent: 'flex-start',
+                  textTransform: 'none',
+                  fontSize: '0.95rem',
+                  py: 1.1,
+                  px: 1.5,
+                  borderRadius: 1.2,
+                  color: theme.palette.primary.light,
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.4)}`,
+                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                  '&:hover': {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.16),
+                  },
+                }}
+                onClick={handleDrawerToggle}
+              >
+                Blogspot
+              </Button>
             </Box>
           )}
         </Container>

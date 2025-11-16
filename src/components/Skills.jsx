@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Container, Grid, useTheme, alpha } from '@mui/material';
+import { Box, Typography, Container, useTheme, alpha } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -32,129 +32,175 @@ const skills = [
   { name: 'HTML', icon: <FontAwesomeIcon icon={faHtml5} /> },
   { name: 'CSS', icon: <FontAwesomeIcon icon={faCss3Alt} /> },
   { name: 'Bootstrap', icon: <FontAwesomeIcon icon={faBootstrap} /> },
-  { name: 'Git & GitHub', icon: <FontAwesomeIcon icon={faGithub} /> },
+  { name: 'Git & GitHub', icon: <FontAwesomeIcon icon={faGitAlt} /> },
   { name: 'Linux', icon: <FontAwesomeIcon icon={faLinux} /> },
   { name: 'AWS EC2', icon: <FontAwesomeIcon icon={faAws} /> },
   { name: 'Cloudflare', icon: <FontAwesomeIcon icon={faCloudflare} /> },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      staggerChildren: 0.04,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120 } },
-};
-
 const Skills = () => {
   const theme = useTheme();
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.12 });
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.12,
+  });
 
-  const primary = theme.palette.primary.main ?? '#00acc1';
-  const primaryLight = alpha(primary, 0.08);
-  const glow = alpha(primary, 0.16);
+  const accentGradient = `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`;
+
+  const container = {
+    hidden: { opacity: 0, y: 18 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        staggerChildren: 0.04,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 120,
+        damping: 14,
+      },
+    },
+  };
 
   return (
     <Box
       id="skills"
       ref={ref}
       sx={{
-        py: { xs: 8, md: 12 },
+        py: { xs: 8, md: 10 },
         background: 'transparent',
         position: 'relative',
-        overflow: 'hidden',
-        color: theme.palette.text.primary,
       }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          left: '-6%',
-          top: '-8%',
-          width: { xs: 160, md: 360 },
-          height: { xs: 160, md: 360 },
-          borderRadius: '50%',
-          background: `radial-gradient(circle at 40% 30%, ${alpha(primary, 0.08)}, rgba(0,0,0,0) 40%)`,
-          zIndex: 0,
-          pointerEvents: 'none',
-        }}
-      />
-
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <motion.div initial="hidden" animate={inView ? 'visible' : 'hidden'} variants={containerVariants}>
-          <motion.div variants={itemVariants}>
-            <Typography variant="h2" sx={{ textAlign: 'center', mb: { xs: 4, md: 6 }, fontWeight: 800, fontSize: { xs: '1.6rem', md: '2.2rem' } }}>
+      <Container maxWidth="lg">
+        {/* Section Title */}
+        <motion.div
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
+          variants={container}
+        >
+          <motion.div variants={item}>
+            <Typography
+              variant="h2"
+              sx={{
+                textAlign: 'center',
+                mb: { xs: 4, md: 5 },
+                fontWeight: 700,
+                fontSize: { xs: '1.8rem', md: '2.4rem' },
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -12,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: 80,
+                  height: 4,
+                  background: accentGradient,
+                  borderRadius: 2,
+                },
+              }}
+            >
               My Skills
             </Typography>
           </motion.div>
 
-          <Grid container spacing={{ xs: 1.5, md: 2.5 }} justifyContent="center" alignItems="stretch">
-            {skills.map((skill, idx) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={skill.name + idx}>
-                <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.99 }}>
+          {/* Optional small subtitle for context */}
+          <motion.div variants={item}>
+            <Typography
+              variant="body2"
+              sx={{
+                textAlign: 'center',
+                mb: { xs: 3.5, md: 4.5 },
+                color: 'text.secondary',
+                maxWidth: 520,
+                mx: 'auto',
+              }}
+            >
+              A mix of languages, tools, and platforms I use to build full-stack, performance-focused
+              applications.
+            </Typography>
+          </motion.div>
+
+          {/* Skills grid */}
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: 12,
+            }}
+          >
+            {skills.map((skill, index) => (
+              <motion.div key={index} variants={item} whileHover={{ y: -3 }}>
+                <Box
+                  sx={{
+                    px: 2.4,
+                    py: 1.3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.1,
+                    borderRadius: 999,
+                    background: 'rgba(10, 15, 25, 0.9)',
+                    border: '1px solid rgba(255,255,255,0.04)',
+                    boxShadow: '0 8px 22px rgba(0,0,0,0.6)',
+                    backdropFilter: 'blur(14px)',
+                    transition:
+                      'transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease',
+                    '&:hover': {
+                      boxShadow: `0 14px 32px rgba(0,172,193,0.35)`,
+                      borderColor: alpha(theme.palette.primary.main, 0.7),
+                      background: 'rgba(10, 20, 32, 0.98)',
+                    },
+                  }}
+                >
                   <Box
+                    className="skill-icon"
                     sx={{
+                      color: theme.palette.primary.main,
                       display: 'flex',
+                      fontSize: '1.1rem',
+                      width: '1.1em',
+                      height: '1.1em',
                       alignItems: 'center',
-                      gap: 2,
-                      p: { xs: 1.25, md: 1.75 },
-                      borderRadius: 2,
-                      background: theme.palette.background.paper,
-                      border: `1px solid ${alpha('#ffffff', 0.04)}`,
-                      transition: 'transform 180ms ease, box-shadow 220ms ease, background 180ms ease',
-                      minHeight: 72,
-                      '&:hover': {
-                        transform: 'translateY(-6px)',
-                        boxShadow: `0 12px 30px ${glow}`,
-                        background: `linear-gradient(180deg, ${primaryLight}, ${alpha('#ffffff', 0.02)})`,
-                        borderColor: alpha(primary, 0.12),
-                        '& .skill-icon': { color: '#fff' },
-                        '& .skill-name': { color: '#fff' },
+                      justifyContent: 'center',
+                      '& svg': {
+                        width: '1em',
+                        height: '1em',
                       },
                     }}
                   >
-                    <Box
-                      className="skill-icon"
-                      sx={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 1.5,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: alpha(primary, 0.06),
-                        color: primary,
-                        fontSize: 20,
-                        flexShrink: 0,
-                        transition: 'all 180ms ease',
-                        '& svg': { width: '1.1em', height: '1.1em' },
-                      }}
-                      aria-hidden
-                    >
-                      {skill.icon}
-                    </Box>
-
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                      <Typography className="skill-name" variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.text.primary, transition: 'color 160ms ease' }}>
-                        {skill.name}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', mt: 0.25 }}>
-                        {skill.name === 'AWS EC2' ? 'Cloud / VM' : skill.name === 'Git & GitHub' ? 'Version control' : ''}
-                      </Typography>
-                    </Box>
+                    {skill.icon}
                   </Box>
-                </motion.div>
-              </Grid>
+
+                  <Typography
+                    className="skill-name"
+                    variant="body2"
+                    sx={{
+                      fontWeight: 500,
+                      color: 'text.primary',
+                      fontSize: '0.9rem',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {skill.name}
+                  </Typography>
+                </Box>
+              </motion.div>
             ))}
-          </Grid>
+          </motion.div>
         </motion.div>
       </Container>
     </Box>
