@@ -88,8 +88,7 @@ const Footer = () => {
                   lineHeight: 1.7,
                 }}
               >
-                I craft efficient and engaging web experiences with a focus on
-                performance, systems thinking, and clean architecture.
+                I build clean and efficient web experiences while steadily strengthening my understanding of low-level systems and performance-oriented development.
               </Typography>
 
               <Box sx={{ display: 'flex', gap: 1 }}>

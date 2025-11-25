@@ -26,40 +26,44 @@ const About = () => {
 
   const journey = [
     {
-      year: '2021',
-      title: 'Started exploring programming',
-      detail: 'Got curious about how systems work under the hood and began learning fundamentals.',
-    },
-    {
       year: '2022',
-      title: 'Backend & servers',
-      detail: 'Learned Node.js, Express, Linux basics and started hosting my own services.',
+      title: 'First steps into programming',
+      detail:
+        'Started playing with basic programming through YouTube, blogs and small practice projects. Mostly just experimenting and getting used to how code works.',
     },
     {
       year: '2023',
-      title: 'Open source & full stack',
-      detail: 'Created and maintained open-source projects, focusing on performance and reliability.',
+      title: 'Web basics & small projects',
+      detail:
+        'Learned HTML, CSS, JavaScript and some backend basics. Built simple websites and small tools for myself and a few friends.',
     },
     {
-      year: '2024–25',
-      title: 'Systems-focused development',
-      detail: 'Building production-ready apps, CLIs and infrastructure-aware projects.',
+      year: '2024',
+      title: 'Backend & self-hosting',
+      detail:
+        'Got more serious about backend development, picked up Node.js, Express, Linux basics and started hosting my own services to understand real deployments.',
+    },
+    {
+      year: '2025',
+      title: 'Student + systems learner',
+      detail:
+        'Balancing studies with building side projects, learning Go, exploring systems design, and slowly moving towards more production-like setups.',
     },
   ];
 
   const workingOn = [
-    'Improving Phoenix XShare with better security & UX.',
-    'Optimising KernelView Go for faster system insight.',
-    'Expanding PyroQuanta with smarter AI workflows.',
-    'Deep learning of Go & systems architecture.',
+    'Phoenix XShare – personal project where I’m learning about auth, security and improving the sharing UX step by step.',
+    'KernelView Go – experimenting with Go and system monitoring to understand concurrency and performance in real use cases.',
+    'PyroQuanta – trying to add simple AI-powered workflows and automation, still in early stages and actively learning.',
+    'Strengthening my fundamentals in data structures, networking, Linux and clean backend architecture.',
   ];
 
   const loveBuilding = [
-    'Privacy-first, self-hostable tools.',
-    'Fast, reliable backend systems.',
-    'Developer-focused CLIs and utilities.',
-    'Modern full-stack applications.',
-    'Infrastructure-aware services.',
+    'Small, self-hostable tools that actually solve my own problems.',
+    'Backends that are simple, predictable and easy to debug.',
+    'Developer-focused CLIs and utilities that save time.',
+    'Modern full-stack apps where I control both frontend and backend.',
+    'Projects that teach me more about infrastructure and reliability.',
   ];
 
   return (
@@ -73,7 +77,6 @@ const About = () => {
       }}
     >
       <Container maxWidth="lg">
-        
         {/* Section Header */}
         <motion.div
           initial="hidden"
@@ -107,7 +110,6 @@ const About = () => {
         </motion.div>
 
         <Grid container spacing={4} sx={{ mb: { xs: 5, md: 6 } }}>
-
           {/* WHO I AM + LOVE BUILDING */}
           <Grid item xs={12} md={6}>
             <motion.div
@@ -136,9 +138,10 @@ const About = () => {
                   color: 'text.secondary',
                 }}
               >
-                I'm a self-taught developer from Kolkata who enjoys building systems that are
-                functional, efficient, and easy to maintain. I learn by experimenting, breaking things,
-                and contributing to open-source.
+                I&apos;m a student and self-taught developer from Kolkata who enjoys
+                building things on the internet. Most of my learning comes from
+                trying ideas, breaking stuff, fixing it again, and slowly
+                improving with every project.
               </Typography>
 
               <Typography
@@ -150,8 +153,10 @@ const About = () => {
                   color: 'text.secondary',
                 }}
               >
-                My interests include backend development, system design, performance optimization,
-                and experimenting with infrastructure-aware applications.
+                Right now I&apos;m focused on backend development, system design and
+                understanding how real-world apps are hosted, monitored and kept
+                reliable. I&apos;m still learning, but I enjoy going a bit deeper than
+                just tutorials and building things I can actually use.
               </Typography>
 
               <Typography
@@ -224,7 +229,13 @@ const About = () => {
                 }}
               >
                 {journey.map((step, i) => (
-                  <Box key={i} sx={{ mb: i === journey.length - 1 ? 0 : 2.2, position: 'relative' }}>
+                  <Box
+                    key={i}
+                    sx={{
+                      mb: i === journey.length - 1 ? 0 : 2.2,
+                      position: 'relative',
+                    }}
+                  >
                     <Box
                       sx={{
                         position: 'absolute',
@@ -240,7 +251,10 @@ const About = () => {
                       }}
                     />
                     <Box sx={{ ml: 3 }}>
-                      <Typography variant="caption" sx={{ color: theme.palette.primary.light }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: theme.palette.primary.light }}
+                      >
                         {step.year}
                       </Typography>
                       <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
@@ -268,7 +282,17 @@ const About = () => {
                 Currently Working On
               </Typography>
 
-              <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0, display: 'flex', flexDirection: 'column', gap: 1.2 }}>
+              <Box
+                component="ul"
+                sx={{
+                  listStyle: 'none',
+                  m: 0,
+                  p: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1.2,
+                }}
+              >
                 {workingOn.map((item, i) => (
                   <Box key={i} sx={{ display: 'flex', gap: 1 }}>
                     <Chip
@@ -293,9 +317,7 @@ const About = () => {
               </Box>
             </motion.div>
           </Grid>
-
         </Grid>
-
       </Container>
     </Box>
   );

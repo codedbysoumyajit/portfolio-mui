@@ -210,9 +210,7 @@ const Hero = () => {
                   color: 'rgba(255,255,255,0.88)',
                 }}
               >
-                I craft efficient and engaging web experiences with a strong
-                foundation in low-level systems and performance-focused
-                development.
+                I build clean and efficient web experiences while steadily strengthening my understanding of low-level systems and performance-oriented development.
               </Typography>
             </motion.div>
 
@@ -271,7 +269,7 @@ const Hero = () => {
 
                   {/* Blogspot (magnetic) */}
                   <MuiLink
-                    href="https://blogspot.soumyajitdas.site"
+                    href="https://blogspot.codedbysoumyajit.dev"
                     target="_blank"
                     rel="noopener noreferrer"
                     underline="none"

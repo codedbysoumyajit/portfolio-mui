@@ -34,7 +34,7 @@ const skills = [
   { name: 'Bootstrap', icon: <FontAwesomeIcon icon={faBootstrap} /> },
   { name: 'Git & GitHub', icon: <FontAwesomeIcon icon={faGitAlt} /> },
   { name: 'Linux', icon: <FontAwesomeIcon icon={faLinux} /> },
-  { name: 'AWS EC2', icon: <FontAwesomeIcon icon={faAws} /> },
+  { name: 'AWS', icon: <FontAwesomeIcon icon={faAws} /> },
   { name: 'Cloudflare', icon: <FontAwesomeIcon icon={faCloudflare} /> },
 ];
 
