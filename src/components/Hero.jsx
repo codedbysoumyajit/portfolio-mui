@@ -490,7 +490,7 @@ const Hero = () => {
                 {/* PROFILE IMAGE */}
                 <Box
                   component="img"
-                  src="/pfp.jpg"
+                  src="/pfp.webp"
                   alt="Profile"
                   sx={{
                     width: '82%',

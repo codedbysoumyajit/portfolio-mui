@@ -38,6 +38,15 @@ const projects = [
     link: 'https://github.com/codedbysoumyajit/KernelView-Go',
     repo: 'codedbysoumyajit/KernelView-Go',
   },
+    {
+    title: 'Cloudflare Workers URL Shortener',
+    description:
+      'A fast, secure URL shortener built on Cloudflare Workers with analytics and authentication.',
+    image: '/shortener.jpg',
+    tags: ['Cloudflare Workers', 'wrangler', 'vitest'],
+    link: 'https://github.com/codedbysoumyajit/cf-url-shortener',
+    repo: 'codedbysoumyajit/cf-url-shortener',
+  },
   {
     title: 'PyroQuanta',
     description:

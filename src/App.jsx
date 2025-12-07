@@ -10,6 +10,10 @@ import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Footer from './components/Footer';
 import BlockchainBackground from './components/BlockchainBackground';
+import SnowfallBackground from './components/SnowfallBackground';
+
+// 🔧 Toggle snowfall ON/OFF here:
+const SNOW_ENABLED = true; // set to false to disable
 
 function App() {
   return (
@@ -25,7 +29,7 @@ function App() {
       >
         {/* Blockchain Background Layer */}
         <BlockchainBackground />
-
+         <SnowfallBackground enabled={SNOW_ENABLED} density={25000} />
         {/* Foreground Content */}
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Navbar />

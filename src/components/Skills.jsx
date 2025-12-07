@@ -14,9 +14,7 @@ import {
   faGitAlt,
   faGithub,
   faLinux,
-  faCloudflare,
   faGolang,
-  faAws,
 } from '@fortawesome/free-brands-svg-icons';
 import { DataObject, Storage, Api } from '@mui/icons-material';
 
@@ -34,8 +32,6 @@ const skills = [
   { name: 'Bootstrap', icon: <FontAwesomeIcon icon={faBootstrap} /> },
   { name: 'Git & GitHub', icon: <FontAwesomeIcon icon={faGitAlt} /> },
   { name: 'Linux', icon: <FontAwesomeIcon icon={faLinux} /> },
-  { name: 'AWS', icon: <FontAwesomeIcon icon={faAws} /> },
-  { name: 'Cloudflare', icon: <FontAwesomeIcon icon={faCloudflare} /> },
 ];
 
 const Skills = () => {
